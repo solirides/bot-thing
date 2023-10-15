@@ -6,9 +6,16 @@ import dotenv from 'dotenv';
 
 if (process.env.NODE_ENV !== 'prod') {
 	dotenv.config();
+	console.log("dotenv is doing stuff");
 }
 
-const discord_client = new Discord.Client();
+const discord_client = new Discord.Client({
+	intents: [
+		Discord.GatewayIntentBits.Guilds,
+		Discord.GatewayIntentBits.GuildMessages,
+		Discord.GatewayIntentBits.DirectMessages
+	]
+});
 
 const hf = new HfInference(process.env.HF_TOKEN);
 
@@ -26,15 +33,20 @@ discord_client.on('ready', () => {
 	console.log(`Logged in as ${discord_client.user.tag}!`);
 });
 
+discord_client.on('message', () => {
+	console.log("fjlsaggakljagkj");
+});
 
-discord_client.on('message', async message => {
+discord_client.on('messageCreate', async message => {
 	// ignore messages from self, empty messages, dms
 	if (message.author.bot || message.content == "" || message.guild === null) {
+		// console.log("no");
 		return;
 	}
 	console.log(`message received from ${message.author}`);
 
-	message.channel.startTyping();
+	// message.channel.startTyping();
+	message.channel.sendTyping();
 
 	let botResponse = "";
 
@@ -50,7 +62,7 @@ discord_client.on('message', async message => {
 
 	botResponse = output.generated_text;
 
-	message.channel.stopTyping();
+	// message.channel.stopTyping();
 
 	message.reply(botResponse)
 		.then(() => console.log("Replied"))
