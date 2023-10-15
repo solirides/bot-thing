@@ -4,6 +4,8 @@ import Discord from 'discord.js';
 
 import dotenv from 'dotenv';
 
+import * as server from './server.js';
+
 if (process.env.NODE_ENV !== 'prod') {
 	dotenv.config();
 	console.log("dotenv is doing stuff");
@@ -68,5 +70,7 @@ discord_client.on('messageCreate', async message => {
 		.then(() => console.log("Replied"))
 		.catch(console.error);
 })
+
+server.keepAlive();
 
 discord_client.login(process.env.TOKEN);
